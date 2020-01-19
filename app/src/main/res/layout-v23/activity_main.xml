@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="@color/WhiteSmoke"
+        >
+        <EditText
+
+            android:id="@+id/inputWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:textSize="30sp"
+            android:hint="@string/input_word"
+            android:background="@color/Wheat"
+            android:inputType="textPersonName"
+            android:layout_margin="5dp"
+            android:importantForAutofill="no" />
+
+        <EditText
+            android:id="@+id/inputMeaning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:textSize="30sp"
+            android:inputType="textPersonName"
+            android:background="@color/Wheat"
+            android:hint="@string/input_meaning"
+            android:layout_margin="5dp"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="78dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/DarkCyan"
+            android:gravity="center"
+            android:text="@string/submit_Button" />
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ListView
+            android:id="@+id/viewTheList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/AliceBlue"
+            android:contextClickable="true"
+
+
+            />
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
