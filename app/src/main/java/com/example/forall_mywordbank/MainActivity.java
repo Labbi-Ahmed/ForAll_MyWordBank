@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +30,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private static int SPLASH_TIME_OUT = 6000;
     DatabaseHelper myDb;
     ActionMode actionMode;
     //added from other project
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         myDb = new DatabaseHelper(this);
 
         listItems = new ArrayList<>();
@@ -63,16 +66,17 @@ public class MainActivity extends AppCompatActivity {
 
         AddData();
         viewData();
-        wordList();
+        //wordList();
 
     }
 
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("You Want to Exit ?" )
+        builder.setMessage("Sure You Want to Exit iT?" )
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity.super.onBackPressed();
