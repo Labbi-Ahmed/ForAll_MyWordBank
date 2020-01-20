@@ -72,9 +72,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2,English);
         contentValues.put(COL_3,Meaning);
-        db.update(TABLE_NAME2,contentValues,"ENGLISH = ? ", new String[] { English });
+        return db.update(TABLE_NAME2,contentValues,"ENGLISH = ? ", new String[] { English })>0;
 
-        return true;
+       // return true;
 
     }
 

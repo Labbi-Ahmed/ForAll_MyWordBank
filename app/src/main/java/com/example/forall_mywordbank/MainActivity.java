@@ -195,7 +195,8 @@ public class MainActivity extends AppCompatActivity {
                         editWord.setText(editWord.getText().toString().trim());
                         editMeaming.setText(editMeaming.getText().toString().trim());
                         if( checkMatch()){
-                            boolean isInserted = myDb.insertData(editWord.getText().toString(),
+                            String FACapitalized = editWord.getText().toString().substring(0,1).toUpperCase()+editWord.getText().toString().substring(1);
+                            boolean isInserted = myDb.insertData(FACapitalized,
                                     editMeaming.getText().toString());
 
                             if (isInserted){
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     if(editMeaming.getText().toString().toLowerCase().equals(splitString[i].toLowerCase()))
                     {
                         meaningMatch = true;
-                       // Toast.makeText(MainActivity.this,editMeaming.getText().toString().toLowerCase()+"="+splitString[i].toString().toLowerCase(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,editMeaming.getText().toString().toLowerCase()+"="+splitString[i].toString().toLowerCase(),Toast.LENGTH_SHORT).show();
                             editMeaming.setText("");
                             editWord.setText("");
                         break;
@@ -242,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(!meaningMatch){
                     String addStringring = cursor.getString(1) +", "+editMeaming.getText().toString();
-
-                    boolean isUpdate = myDb.updateData(editWord.getText().toString(),addStringring);
+                    String FACapitalized = editWord.getText().toString().substring(0,1).toUpperCase()+editWord.getText().toString().substring(1);
+                    boolean isUpdate = myDb.updateData(FACapitalized,addStringring);
 
                     if (isUpdate){
                         Toast.makeText(MainActivity.this, "Data Update", Toast.LENGTH_SHORT).show();
