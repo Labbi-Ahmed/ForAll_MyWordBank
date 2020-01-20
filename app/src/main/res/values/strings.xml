@@ -4,4 +4,7 @@
     <string name="input_meaning">Meaning</string>
     <string name="input_word">Word</string>
     <string name="todo">TODO</string>
+    <string name="exit_string">Are You Sure to Exit ?</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
 </resources>

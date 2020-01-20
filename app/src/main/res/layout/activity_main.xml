@@ -65,12 +65,10 @@
         <ListView
             android:id="@+id/viewTheList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/AliceBlue"
+            android:layout_height="wrap_content"
             android:contextClickable="true"
-
-
-            tools:targetApi="m"/>
+            tools:targetApi="m"
+            />
 
 
 

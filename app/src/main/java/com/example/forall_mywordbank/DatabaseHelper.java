@@ -67,11 +67,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME2, "ENGLISH = ?", new String[]{word});
     }
 
-//    public boolean updateData(String id,String English, String Meaning){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        return false;
-//
-//    }
+    public boolean updateData(String English, String Meaning){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_2,English);
+        contentValues.put(COL_3,Meaning);
+        db.update(TABLE_NAME2,contentValues,"ENGLISH = ? ", new String[] { English });
+
+        return true;
+
+    }
 
 }

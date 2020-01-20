@@ -6,12 +6,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Layout;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,24 +24,25 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 6000;
     DatabaseHelper myDb;
-    ActionMode actionMode;
-    //added from other project
+
 
     EditText editWord, editMeaming, id_forDelete;
     Button SubmitInDB;
-   // Button deletedButton;
 
     ListView listView;
     ArrayList<String> listItems;
@@ -72,26 +77,54 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Sure You Want to Exit iT?" )
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.super.onBackPressed();
-                    }
-                })
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCancelable(false);
+        dialog.show();
 
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        Button yes_button, no_button;
+
+        yes_button = (Button) dialog.findViewById(R.id.yes_button);
+        no_button = (Button)dialog.findViewById(R.id.no_button);
+
+        yes_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.super.onBackPressed();
+            }
+        });
+
+        no_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        //this dialog for the exit build in from android studio
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage("Sure You Want to Exit iT?" )
+//                .setCancelable(false)
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        MainActivity.super.onBackPressed();
+//                    }
+//                })
+//
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
     }
 
     private void wordList(){
@@ -116,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
             while (cursor.moveToNext()){
                 listItems.add(cursor.getString(0)+"\n"+cursor.getString(1));
             }
-
-            adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,listItems);
+            Collections.sort(listItems);
+           // adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,listItems);
+            adapter = new ArrayAdapter<>(this,R.layout.list_items_view,listItems);
             listView.setAdapter(adapter);
 
         }
@@ -163,12 +197,35 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = myDb.getAllData();
 
         while (cursor.moveToNext()){
-            if(cursor.getString(1).toLowerCase().equals(editWord.getText().toString().toLowerCase()) )
-                return  false;
+            if(cursor.getString(0).toLowerCase().equals(editWord.getText().toString().toLowerCase()) && cursor.getString(0).toLowerCase().equals(editWord.getText().toString().toLowerCase())  )
+            {
+                    String addStringring = cursor.getString(1) +", "+editMeaming.getText().toString();
+
+                    boolean isUpdate = myDb.updateData(editWord.getText().toString(),addStringring);
+
+                    if (isUpdate){
+                        Toast.makeText(MainActivity.this, "Data Update", Toast.LENGTH_SHORT).show();
+                        editWord.setText("");
+                        editMeaming.setText("");
+                        listItems.clear();
+                        viewData();
+                    }
+                    else
+                        Toast.makeText(MainActivity.this,"Data Not Update!!",Toast.LENGTH_SHORT).show();
+
+                    return  false;
+
+            }
         }
+
+
+
 
         return true;
     }
+
+
+
 
     public void removeItems(List<String> items){
         for (String item : items){
@@ -198,10 +255,13 @@ public class MainActivity extends AppCompatActivity {
     AbsListView.MultiChoiceModeListener multiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode mode, int position, long id, boolean checked) {
+
+
             if (userSelection.contains(listItems.get(position)))
                 userSelection.remove(listItems.get(position));
             else
                 userSelection.add(listItems.get(position));
+
 
             mode.setTitle(userSelection.size()+ " Selected..");
 
