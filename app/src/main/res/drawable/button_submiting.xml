@@ -3,12 +3,12 @@
 
 
     <stroke
-        android:color="@color/IndianRed"
-        android:width="2dp"
+        android:color="@color/DarkCyan"
+        android:width="4dp"
         />
     <solid
 
-        android:color="@color/DarkCyan"
+        android:color="@color/Cyan"
         />
 
     <corners
