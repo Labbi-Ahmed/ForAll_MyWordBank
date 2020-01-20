@@ -13,8 +13,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.Layout;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,15 +67,43 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.viewTheList);
         //textView = (TextView) findViewById(R.id.clickButton);
 
+        editWord.addTextChangedListener(inputTextWather);
+        editMeaming.addTextChangedListener(inputTextWather);
 
         listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(multiChoiceModeListener);
+
+        SubmitInDB.setEnabled(false);
 
         AddData();
         viewData();
         //wordList();
 
     }
+
+    private TextWatcher inputTextWather = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            String wordInput = editWord.getText().toString().trim();
+            String meaningInput = editMeaming.getText().toString().trim();
+
+            SubmitInDB.setEnabled(!wordInput.isEmpty() && !meaningInput.isEmpty());
+
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
 
     @Override
     public void onBackPressed() {
@@ -162,32 +192,25 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!TextUtils.isEmpty(editWord.getText().toString()) && !TextUtils.isEmpty(editMeaming.getText().toString())){
+                        editWord.setText(editWord.getText().toString().trim());
+                        editMeaming.setText(editMeaming.getText().toString().trim());
+                        if( checkMatch()){
+                            boolean isInserted = myDb.insertData(editWord.getText().toString(),
+                                    editMeaming.getText().toString());
 
-                            if( checkMatch()){
-                                boolean isInserted = myDb.insertData(editWord.getText().toString(),
-                                        editMeaming.getText().toString());
-
-                                if (isInserted){
-                                    Toast.makeText(MainActivity.this, "Data inserted", Toast.LENGTH_SHORT).show();
-                                    editWord.setText("");
-                                    editMeaming.setText("");
-                                    listItems.clear();
-                                    viewData();
-                                }
-                                else
-                                    Toast.makeText(MainActivity.this,"Data Not inserted",Toast.LENGTH_SHORT).show();
+                            if (isInserted){
+                                Toast.makeText(MainActivity.this, "Data inserted", Toast.LENGTH_SHORT).show();
+                                editWord.setText("");
+                                editMeaming.setText("");
+                                listItems.clear();
+                                viewData();
+                            }
+                            else
+                                Toast.makeText(MainActivity.this,"Data Not inserted",Toast.LENGTH_SHORT).show();
                             }
 
-                            else
-
-                                Toast.makeText(MainActivity.this,"Data Is Matched",Toast.LENGTH_SHORT).show();
                         }
-                        else
 
-                            Toast.makeText(MainActivity.this,"Data is Empty",Toast.LENGTH_SHORT).show();
-
-                    }
                 });
     }
 
@@ -197,8 +220,27 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = myDb.getAllData();
 
         while (cursor.moveToNext()){
-            if(cursor.getString(0).toLowerCase().equals(editWord.getText().toString().toLowerCase()) && cursor.getString(0).toLowerCase().equals(editWord.getText().toString().toLowerCase())  )
+            if(cursor.getString(0).toLowerCase().equals(editWord.getText().toString().toLowerCase()) )
             {
+                boolean meaningMatch = false;
+                String string = cursor.getString(1);
+                String[] splitString = string.split(",",0);
+                //.toLowerCase().split(",",0);
+                for (int i =0; i<splitString.length; i++)
+                {
+                    if(editMeaming.getText().toString().toLowerCase().equals(splitString[i].toLowerCase()))
+                    {
+                        meaningMatch = true;
+                       // Toast.makeText(MainActivity.this,editMeaming.getText().toString().toLowerCase()+"="+splitString[i].toString().toLowerCase(),Toast.LENGTH_SHORT).show();
+                            editMeaming.setText("");
+                            editWord.setText("");
+                        break;
+
+
+                    }
+                }
+
+                if(!meaningMatch){
                     String addStringring = cursor.getString(1) +", "+editMeaming.getText().toString();
 
                     boolean isUpdate = myDb.updateData(editWord.getText().toString(),addStringring);
@@ -210,16 +252,20 @@ public class MainActivity extends AppCompatActivity {
                         listItems.clear();
                         viewData();
                     }
-                    else
+                    else{
                         Toast.makeText(MainActivity.this,"Data Not Update!!",Toast.LENGTH_SHORT).show();
+                    }
+
 
                     return  false;
 
+                }else{
+                    Toast.makeText(MainActivity.this,"Already Exit!!",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
             }
         }
-
-
-
 
         return true;
     }
