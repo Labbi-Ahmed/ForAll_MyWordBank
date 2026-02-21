@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-
     public static final String DATABASE_NAME = "WordList.db";
     public static final String TABLE_NAME = "MyWord_table";
     public static final String TABLE_NAME2 = "AllMyWord_table_";
